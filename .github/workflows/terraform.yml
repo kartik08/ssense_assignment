@@ -3,10 +3,17 @@ name: Terraform Deployment
 on:
   push:
     branches:
-      - master  # Trigger on push to main branch
-  pull_request:
-    branches:
-      - master  # Trigger on pull request to main branch
+      - master
+  workflow_dispatch:  # Allows manual trigger of the workflow
+    inputs:
+      action:
+        description: 'Choose to apply or destroy'
+        required: true
+        default: 'apply'
+        type: string
+        options:
+          - apply
+          - destroy
 
 jobs:
   terraform:
