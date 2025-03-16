@@ -1,0 +1,51 @@
+name: Terraform Deployment
+
+on:
+  push:
+    branches:
+      - master  # Trigger on push to main branch
+  pull_request:
+    branches:
+      - master  # Trigger on pull request to main branch
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v1
+
+         # Zip the file before running Terraform (optional step)
+      - name: Zip a specific file
+        run: |
+          zip lambda_function.zip lambda_artifacts/lambda_function.py
+
+      # Configure AWS credentials (or any other provider)
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Plan Terraform Deployment
+      - name: Terraform Plan
+        run: terraform plan
+
+      # Apply Terraform Configuration (for Production or on approval)
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      # Optional: Terraform Output
+      - name: Terraform Output
+        run: terraform output
