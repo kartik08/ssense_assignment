@@ -1,25 +1,21 @@
 name: Terraform Deployment
 
 on:
-  push:
-    branches:
-      - master
-  workflow_dispatch:  # Allows manual trigger of the workflow
-    inputs:
-      action:
-        description: 'Choose to apply or destroy'
-        required: true
-        default: 'apply'
-        type: string
-        options:
-          - apply
-          - destroy
+  issue_comment:
+    types: [created]
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     steps:
+
+    steps:
+      # Check if the comment is on a pull request and contains /apply or /destroy
+      - name: Check if PR comment contains /apply or /destroy
+        if: github.event.issue.pull_request != null && (contains(github.event.comment.body, '/apply') || contains(github.event.comment.body, '/destroy'))
+        run: |
+          echo "PR comment contains /apply or /destroy, proceeding with the respective action."
       # Checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v2
@@ -49,10 +45,15 @@ jobs:
       - name: Terraform Plan
         run: terraform plan
 
-      # Apply Terraform Configuration (for Production or on approval)
+     # Run Terraform Apply if the comment contains /apply
       - name: Terraform Apply
         run: terraform apply -auto-approve
+        if: github.event.issue.pull_request != null && contains(github.event.comment.body, '/apply')
 
+      # Run Terraform Destroy if the comment contains /destroy
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        if: github.event.issue.pull_request != null && contains(github.event.comment.body, '/destroy')
       # Optional: Terraform Output
       - name: Terraform Output
         run: terraform output
