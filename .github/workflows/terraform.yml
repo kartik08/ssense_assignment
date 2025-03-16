@@ -9,8 +9,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-    steps:
       # Check if the comment is on a pull request and contains /apply or /destroy
       - name: Check if PR comment contains /apply or /destroy
         if: github.event.issue.pull_request != null && (contains(github.event.comment.body, '/apply') || contains(github.event.comment.body, '/destroy'))
