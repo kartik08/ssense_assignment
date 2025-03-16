@@ -1,0 +1,6 @@
+boto3
+uuid
+pandas
+scikit-learn
+joblib
+numpy
