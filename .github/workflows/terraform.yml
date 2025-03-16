@@ -24,7 +24,7 @@ jobs:
          # Zip the file before running Terraform (optional step)
       - name: Zip a specific file
         run: |
-          zip lambda_function.zip lambda_artifacts/lambda_function.py
+          zip lambda_artifacts/lambda_function.zip lambda_artifacts/lambda_function.py
 
       # Configure AWS credentials (or any other provider)
       - name: Configure AWS credentials
