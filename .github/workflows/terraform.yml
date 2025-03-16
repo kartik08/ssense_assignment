@@ -38,10 +38,6 @@ jobs:
       - name: Setup Terraform backend
         run: terraform init -backend-config="bucket=your-terraform-state-bucket" -backend-config="key=terraform.tfstate" -backend-config="region=${{ secrets.AWS_DEFAULT_REGION }}"
 
-      # Initialize Terraform
-      - name: Terraform Init
-        run: terraform init
-
       # Plan Terraform Deployment
       - name: Terraform Plan
         run: terraform plan
